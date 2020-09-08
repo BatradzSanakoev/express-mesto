@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const fs = require('fs');
 const path = require('path');
 const usersRouter = require('express').Router();
@@ -6,15 +7,12 @@ const usersFile = path.join('.', 'data', 'users.json');
 
 usersRouter.get('/users', (req, res) => {
   fs.readFile(usersFile, { encoding: 'utf8' }, (err, data) => {
-
     const newData = JSON.parse(data);
 
     if (err) {
-      console.log(err);
+      res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
       return;
     }
-
-    if (!newData) res.status(404).send({ 'message': 'Запрашиваемый ресурс не найден' });
 
     res.send(newData);
   });
@@ -22,7 +20,6 @@ usersRouter.get('/users', (req, res) => {
 
 usersRouter.get('/users/:_id', (req, res) => {
   fs.readFile(usersFile, { encoding: 'utf8' }, (err, data) => {
-
     const newData = JSON.parse(data);
 
     if (err) {
@@ -30,10 +27,10 @@ usersRouter.get('/users/:_id', (req, res) => {
       return;
     }
 
-    const user = newData.find(data => data._id === req.params._id);
+    const user = newData.find((item) => item._id === req.params._id);
 
     if (!user) {
-      res.status(404).send({ 'message': 'Нет пользователя с таким id' });
+      res.status(404).send({ message: 'Нет пользователя с таким id' });
       return;
     }
 
