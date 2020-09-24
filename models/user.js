@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 
 const regex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?\#?$/;

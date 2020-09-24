@@ -11,9 +11,13 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params._id)
+    .orFail(new Error('CastError'))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'CastError') res.status(404).send({ message: 'Данные не найдены!' });
+      if (err.message === 'CastError') {
+        res.status(404).send({ message: 'Данные не найдены!' });
+        return;
+      }
       res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
@@ -23,7 +27,10 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((newUser) => res.send(newUser))
     .catch((err) => {
-      if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные!' });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные!' });
+        return;
+      }
       res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
@@ -31,13 +38,27 @@ module.exports.createUser = (req, res) => {
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .orFail(new Error('CastError'))
     .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'Error in update user' }));
+    .catch((err) => {
+      if (err.message === 'CastError') {
+        res.status(404).send({ message: 'Нет пользователя с таким Id!' });
+        return;
+      }
+      res.status(500).send({ message: 'Error in update user' });
+    });
 };
 
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail(new Error('CastError'))
     .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'Error in avatar user' }));
+    .catch((err) => {
+      if (err.message === 'CastError') {
+        res.status(404).send({ message: 'Нет пользователя с таким Id!' });
+        return;
+      }
+      res.status(500).send({ message: 'Error in avatar user' });
+    });
 };
