@@ -44,7 +44,7 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.message === 'ValidationError') {
-        res.status(400).send({ message: 'Отсутствует заданная карточка!' });
+        res.status(404).send({ message: 'Отсутствует заданная карточка!' });
         return;
       }
       res.status(500).send({ message: 'Error in like cards' });
@@ -57,7 +57,7 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.message === 'ValidationError') {
-        res.status(400).send({ message: 'Отсутствует заданная карточка!' });
+        res.status(404).send({ message: 'Отсутствует заданная карточка!' });
         return;
       }
       res.status(500).send({ message: 'Error in like cards' });
